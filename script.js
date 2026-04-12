@@ -26,5 +26,28 @@ function renderlist(){
         });
     }
         li.appendChild(namespan);
-        
+
 }
+function updateTotalCalories(){
+    let total = 0;
+    for(let i = 0; i < foods.length; i++){
+        total += foods[i].calories;
+    }
+    totalcalories.textContent = 'Total Calories: ' + total;
+}
+function savetoLocalStorage(){
+    localStorage.setItem('foods', JSON.stringify(foods));
+}
+addbtn.addEventListener('click', function(){
+    const name = foodnameinput.value;
+    const calories = parseInt(foodcalorieinput.value);
+
+});
+resetbtn.addEventListener('click', function(){
+    if(confirm('Are you sure you want to reset the list?')){
+        foods = [];
+        savetoLocalStorage();
+        renderlist();
+        updateTotalCalories();
+    }
+});
