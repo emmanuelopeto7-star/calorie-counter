@@ -1,11 +1,11 @@
-const addbtn = document.getElementById('addbtn');
+const addbtn = document.getElementById('add-btn');
 const resetbtn = document.getElementById('resetbtn');
-const foodnameinput = document.getElementById('foodnameinput');
-const foodcalorieinput = document.getElementById('foodcalorieinput');
-const foodlist = document.getElementById('foodlist');
-const totalcalories = document.getElementById('totalcalories');
+const foodnameinput = document.getElementById('food-name');
+const foodcalorieinput = document.getElementById('calories');
+const foodlist = document.getElementById('food-log');
+const totalcalories = document.getElementById('total-calories');
 
-let foods = JSON.parse(localStorage.getItem('foods')) 
+let foods = JSON.parse(localStorage.getItem('foods')) || [];
 
 function renderlist(){
     foodlist.innerHTML = '';
@@ -21,13 +21,18 @@ function renderlist(){
         removebtn.textContent = 'Remove';
         removebtn.addEventListener('click', function(){
             foods.splice(i, 1);
-            localStorage.setItem('foods', JSON.stringify(foods));
+            savetoLocalStorage();
             renderlist();
+            updateTotalCalories();
         });
-    }
-        li.appendChild(namespan);
 
+        li.appendChild(namespan);
+        li.appendChild(caloriespan);
+        li.appendChild(removebtn);
+        foodlist.appendChild(li);
+    }
 }
+
 function updateTotalCalories(){
     let total = 0;
     for(let i = 0; i < foods.length; i++){
@@ -35,14 +40,29 @@ function updateTotalCalories(){
     }
     totalcalories.textContent = 'Total Calories: ' + total;
 }
+
 function savetoLocalStorage(){
     localStorage.setItem('foods', JSON.stringify(foods));
 }
-addbtn.addEventListener('click', function(){
-    const name = foodnameinput.value;
-    const calories = parseInt(foodcalorieinput.value);
 
+addbtn.addEventListener('click', function(){
+    const name = foodnameinput.value.trim();
+    const calories = parseInt(foodcalorieinput.value, 10);
+
+    if (!name || Number.isNaN(calories) || calories < 0) {
+        alert('Please enter a food name and a valid calorie amount.');
+        return;
+    }
+
+    foods.push({ name, calories });
+    savetoLocalStorage();
+    renderlist();
+    updateTotalCalories();
+
+    foodnameinput.value = '';
+    foodcalorieinput.value = '';
 });
+
 resetbtn.addEventListener('click', function(){
     if(confirm('Are you sure you want to reset the list?')){
         foods = [];
@@ -51,3 +71,6 @@ resetbtn.addEventListener('click', function(){
         updateTotalCalories();
     }
 });
+
+renderlist();
+updateTotalCalories();
