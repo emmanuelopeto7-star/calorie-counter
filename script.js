@@ -44,15 +44,17 @@ function updateTotalCalories(){
 function savetoLocalStorage(){
     localStorage.setItem('foods', JSON.stringify(foods));
 }
+fetch('https://api.edamam.com/api/nutrition-data?app_id=YOUR_ID&app_key=YOUR_KEY&ingr=1%20large%20apple')
+.then(response => response.json())
+.then (data => console.log(data))
+.catch(error => console.error('Error fetching data:', error));
+
 
 addbtn.addEventListener('click', function(){
     const name = foodnameinput.value.trim();
     const calories = parseInt(foodcalorieinput.value, 10);
 
-    if (!name || Number.isNaN(calories) || calories < 0) {
-        alert('Please enter a food name and a valid calorie amount.');
-        return;
-    }
+   
 
     foods.push({ name, calories });
     savetoLocalStorage();
