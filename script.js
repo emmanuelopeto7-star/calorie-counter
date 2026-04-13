@@ -31,11 +31,19 @@ function renderlist(){
         foodlist.appendChild(li);
     }
 }
-fetch('https://api.calorieninjas.com/v1/nutrition?query=')
-.then(response => response.json())
-.then (data => console.log(data))
-.catch(error => console.error('Error fetching data:', error));
-
+async function fetchCalories(foodname){
+    const response = await fetch("https://api.calorieninjas.com/v1/nutrition?query=" + foodname, {
+        method: 'GET',
+        headers: {
+            "content-type": 'application/json',
+            'X-Api-Key':"ioGiwhhgO6jgtzeM6SDkBcDHEkVsTC2lV8edUJ1i"
+        }
+    })
+    .then(res => res.json())
+    .then(data => console.log(data))
+    .catch(error => console.error('Error fetching calories:', error));
+}
+    
 addbtn.addEventListener('click', function(){
     const name = foodnameinput.value.trim();
 
@@ -44,18 +52,21 @@ addbtn.addEventListener('click', function(){
         return;
     }
     getcaloriesfromAPI(name);
-    .then(calories => {
+   then((calories) => {
         foodlist.push({ name, calories });
         savetoLocalStorage();
         renderlist();
         updateTotalCalories();
     })
+    
     .catch(error=> console.error('Error fetching calories:', error));
+    })
 function updateTotalCalories(){
     let total = 0;
     for(let i = 0; i < foods.length; i++){
         total += foods[i].calories;
     }
+
     totalcalories.textContent = 'Total Calories: ' + total;
 }
 
@@ -71,7 +82,7 @@ addbtn.addEventListener('click', function(){
         return;
     }
 
-    alert('Calories lookup is not implemented yet. Manual calorie entry has been removed.');
+    console.log('Calories lookup is not implemented yet. Manual calorie entry has been removed.');
 });
 
 resetbtn.addEventListener('click', function(){
@@ -84,4 +95,4 @@ resetbtn.addEventListener('click', function(){
 });
 
 renderlist();
-updateTotalCalories();
+updateTotalCalories()
